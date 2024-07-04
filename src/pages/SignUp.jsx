@@ -36,7 +36,7 @@ const SignUp = () => {
 
   const handleModalClose = () => {
     setModalOpen(false);
-    navigate('/'); // Navigate to login page after successful registration
+    navigate('/login'); // Navigate to login page 
   };
 
   return (

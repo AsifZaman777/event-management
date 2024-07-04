@@ -12,6 +12,8 @@ export default {
   plugins: [daisyui],
 
   daisyui: {
-    themes: ["light","halloween"],
+    themes: [
+      "bumblebee",
+    ],
   },
 }
