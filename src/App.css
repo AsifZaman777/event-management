@@ -1,4 +1,8 @@
 /* Add this CSS to your global styles or App.css file */
+body {
+  margin: auto;
+}
+
 .fade-enter {
   opacity: 0;
 }
