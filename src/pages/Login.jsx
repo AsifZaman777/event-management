@@ -58,10 +58,10 @@ const Login = () => {
       <div className="hero-overlay bg-opacity-60"></div>
       <div className="hero-content flex-col">
         <div className="text-center">
-          <h1 className="text-5xl font-bold text-white">Login</h1>
+          <h1 className="text-5xl font-bold text-white">User Login Panel</h1>
           <p className="py-6 text-white"></p>
         </div>
-        <div className="card w-full max-w-sm bg-base-100 bg-opacity-40 backdrop-blur-sm shadow-2xl">
+        <div className="card w-96 max-w-sm bg-base-100 bg-opacity-40 backdrop-blur-sm shadow-2xl">
           <form className="card-body" onSubmit={handleSubmit}>
             <div className="form-control">
               <label className="label">
@@ -93,15 +93,16 @@ const Login = () => {
               <button type="submit" className="btn btn-primary w-full">Login</button>
             </div>
           </form>
-          <div className="form-control mt-4">
-            <button
-              type="button"
-              className="btn btn-secondary w-full"
-              onClick={() => navigate('/signup')}
-            >
-              Create New
-            </button>
-          </div>
+          <div className="form-control mb-10 flex items-center justify-center space-y-2">
+  <p className="text-black font-normal">Not have an account?</p>
+  <button
+    type="button"
+    className="btn btn-success text-lg text-white hover:underline"
+    onClick={() => navigate('/signup')}
+  >
+    Create New
+  </button>
+</div>
         </div>
       </div>
       <dialog id="credentials_err" className="modal">

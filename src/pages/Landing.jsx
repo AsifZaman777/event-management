@@ -17,7 +17,7 @@ const Landing = () => {
                             </ul>
                             <br />
                             <Link to="/login">
-                            <button className="btn btn-warning">Jum into the app</button>
+                            <button className="btn btn-warning">Jump into the app</button>
                             </Link>
                         </div>
                     </div>
