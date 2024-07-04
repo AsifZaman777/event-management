@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import bg from '../assets/images/bg1.jpg';
-import userData from '../data/user_data.json'; // Assuming user_data.json exists
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -13,17 +12,15 @@ const SignUp = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Simulate saving user data
     const newUser = { username, email, password };
-    const updatedUserData = [...userData, newUser];
 
     try {
-      const response = await fetch('/api/saveUserData', {
+      const response = await fetch('http://localhost:3001/api/saveUserData', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(updatedUserData),
+        body: JSON.stringify(newUser),
       });
 
       if (!response.ok) {
