@@ -40,13 +40,16 @@ const Login = () => {
     });
 
     if (found) {
-      console.log('Login successful');
-      navigate('/dashboard'); // Navigate to dashboard on successful login
+      navigate('/dashboard');
+      localStorage.setItem('email', email);
     } else {
       document.body.classList.add('no-scroll');
       setModalOpen(true);
     }
   };
+
+ 
+
 
   const closeModal = () => {
     document.body.classList.remove('no-scroll');
