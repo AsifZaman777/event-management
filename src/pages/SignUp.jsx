@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import bg from '../assets/images/bg1.jpg';
+import emailjs from '@emailjs/browser';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -8,6 +9,30 @@ const SignUp = () => {
   const [username, setUsername] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
+
+  const sendMail = (event, email) => {
+    event.preventDefault();
+
+    const templateParams = {
+      to_email: email,
+      to_name: username,
+      message: `Hello ${username},\n\nWelcome to our platform! Your account has been created successfully.\n\nPlease login to your account using the following credentials: \n\nLogin Page: http://localhost:3000/login\n\nEmail: ${email}\nPassword: ${password}\n\n`,
+    };
+
+    emailjs.send(
+      'event-management', // Replace with your EmailJS service ID
+      'em_info', // Replace with your EmailJS template ID
+      templateParams, {
+      publicKey: 'nqtGbxhko2-OWTNTX', // Replace with your EmailJS public ID
+    }
+    )
+      .then((response) => {
+        console.log('Email successfully sent!', response.status, response.text);
+      })
+      .catch((err) => {
+        console.error('Failed to send email. Error:', err);
+      });
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -25,6 +50,10 @@ const SignUp = () => {
 
       if (!response.ok) {
         throw new Error('Failed to save user data');
+      }
+      else {
+        sendMail(event, email);
+        console.log('User data saved successfully:', response);
       }
 
       setModalOpen(true);
