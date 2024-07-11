@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
 const Dashboard = () => {
@@ -29,8 +29,8 @@ const Dashboard = () => {
         </div>
         <nav className="flex-1">
           <ul className="space-y-3">
-            <li className="px-4 py-2 hover:bg-gray-800 cursor-pointer">Home</li>
-            <li className="px-4 py-2 hover:bg-gray-800 cursor-pointer">Profile</li>
+            <Link to={"/dashboard"}><li className="px-4 py-2 hover:bg-gray-800 cursor-pointer">Home</li></Link>
+            <Link to="/profile"><li className="px-4 py-2 hover:bg-gray-800 cursor-pointer">Profile</li></Link>
             <li className="px-4 py-2 hover:bg-gray-800 cursor-pointer">Settings</li>
             <li className="px-4 py-2 hover:bg-gray-800 cursor-pointer">Messages</li>
           </ul>
