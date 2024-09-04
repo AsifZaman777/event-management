@@ -59,6 +59,29 @@ app.get('/api/getAllUserData', (req, res) => {
   });
 });
 
+// End Point to get the user data by email
+app.get('/api/getUserDataByEmail', (req, res) => {
+  const dataFilePath = path.join('user_data.json');
+  const email = req.query.email;
+
+  // Read existing user data
+  fs.readFile(dataFilePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading user data file:', err);
+      return res.status(500).json({ error: 'Failed to read user data' });
+    }
+
+    const userData = JSON.parse(data);
+    const user = userData.find((user) => user.email === email);
+
+    if (user) {
+      res.status(200).json(user);
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  });
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
