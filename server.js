@@ -130,6 +130,57 @@ app.put('/api/updateProfile', (req, res) => {
   });
 });
 
+// Endpoint to update password
+app.put('/api/updatePassword', (req, res) => {
+  const dataFilePath = path.join('user_data.json');
+  const { email, oldPassword, newPassword } = req.body;
+
+  if (!email || !oldPassword || !newPassword) {
+    return res.status(400).json({ error: 'Email, old password, and new password are required' });
+  }
+
+  // Read existing user data
+  fs.readFile(dataFilePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading user data file:', err);
+      return res.status(500).json({ error: 'Failed to read user data' });
+    }
+
+    let userData;
+    try {
+      userData = JSON.parse(data);
+    } catch (err) {
+      console.error('Error parsing user data:', err);
+      return res.status(500).json({ error: 'Failed to parse user data' });
+    }
+
+    const user = userData.find((user) => user.email === email);
+
+    if (user) {
+      // Check if old password matches
+      if (user.password !== oldPassword) {
+        return res.status(400).json({ error: 'Old password is incorrect' });
+      }
+
+      // Update user password
+      user.password = newPassword;
+
+      // Write updated user data back to the file
+      fs.writeFile(dataFilePath, JSON.stringify(userData, null, 2), (err) => {
+        if (err) {
+          console.error('Error writing user data file:', err);
+          return res.status(500).json({ error: 'Failed to update user data' });
+        }
+
+        // Respond with success message
+        res.status(200).json({ message: 'Password updated successfully' });
+      });
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  });
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
