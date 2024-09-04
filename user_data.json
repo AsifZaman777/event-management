@@ -12,7 +12,10 @@
   {
     "username": "asif",
     "email": "asifzaman3123@gmail.com",
-    "password": "asif1234"
+    "password": "asif1234",
+    "firstName": "Asif",
+    "lastName": "Mehedi",
+    "profileImage": "https://i.ibb.co/2YGPgzH/image.png"
   },
   {
     "username": "mehedi",
@@ -27,6 +30,9 @@
   {
     "username": "test",
     "email": "test@gmail.com",
-    "password": "test1234"
+    "password": "test1234",
+    "firstName": "Test",
+    "lastName": "User name",
+    "profileImage": "https://i.ibb.co/nwHsxJj/image.png"
   }
 ]

@@ -59,6 +59,128 @@ app.get('/api/getAllUserData', (req, res) => {
   });
 });
 
+// End Point to get the user data by email
+app.get('/api/getUserDataByEmail', (req, res) => {
+  const dataFilePath = path.join('user_data.json');
+  const email = req.query.email;
+
+  // Read existing user data
+  fs.readFile(dataFilePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading user data file:', err);
+      return res.status(500).json({ error: 'Failed to read user data' });
+    }
+
+    const userData = JSON.parse(data);
+    const user = userData.find((user) => user.email === email);
+
+    if (user) {
+      res.status(200).json(user);
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  });
+});
+
+// Endpoint to update profile
+app.put('/api/updateProfile', (req, res) => {
+  const dataFilePath = path.join('user_data.json');
+  const { email, firstName, lastName, profileImage } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: 'Email is required' });
+  }
+
+  // Read existing user data
+  fs.readFile(dataFilePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading user data file:', err);
+      return res.status(500).json({ error: 'Failed to read user data' });
+    }
+
+    let userData;
+    try {
+      userData = JSON.parse(data);
+    } catch (err) {
+      console.error('Error parsing user data:', err);
+      return res.status(500).json({ error: 'Failed to parse user data' });
+    }
+
+    const user = userData.find((user) => user.email === email);
+
+    if (user) {
+      // Update user data
+      user.firstName = firstName;
+      user.lastName = lastName;
+      user.profileImage = profileImage;
+
+      // Write updated user data back to the file
+      fs.writeFile(dataFilePath, JSON.stringify(userData, null, 2), (err) => {
+        if (err) {
+          console.error('Error writing user data file:', err);
+          return res.status(500).json({ error: 'Failed to update user data' });
+        }
+
+        // Respond with success message
+        res.status(200).json({ message: 'User profile updated successfully', user });
+      });
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  });
+});
+
+// Endpoint to update password
+app.put('/api/updatePassword', (req, res) => {
+  const dataFilePath = path.join('user_data.json');
+  const { email, oldPassword, newPassword } = req.body;
+
+  if (!email || !oldPassword || !newPassword) {
+    return res.status(400).json({ error: 'Email, old password, and new password are required' });
+  }
+
+  // Read existing user data
+  fs.readFile(dataFilePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading user data file:', err);
+      return res.status(500).json({ error: 'Failed to read user data' });
+    }
+
+    let userData;
+    try {
+      userData = JSON.parse(data);
+    } catch (err) {
+      console.error('Error parsing user data:', err);
+      return res.status(500).json({ error: 'Failed to parse user data' });
+    }
+
+    const user = userData.find((user) => user.email === email);
+
+    if (user) {
+      // Check if old password matches
+      if (user.password !== oldPassword) {
+        return res.status(400).json({ error: 'Old password is incorrect' });
+      }
+
+      // Update user password
+      user.password = newPassword;
+
+      // Write updated user data back to the file
+      fs.writeFile(dataFilePath, JSON.stringify(userData, null, 2), (err) => {
+        if (err) {
+          console.error('Error writing user data file:', err);
+          return res.status(500).json({ error: 'Failed to update user data' });
+        }
+
+        // Respond with success message
+        res.status(200).json({ message: 'Password updated successfully' });
+      });
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  });
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

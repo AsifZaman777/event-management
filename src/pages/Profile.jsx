@@ -1,21 +1,112 @@
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
 import defaultProfileImage from '/vite.svg';
+import useAuthData from '../hooks/UseAuthData';
 
 const Profile = () => {
+    const userData = useAuthData();
     const navigate = useNavigate();
 
-    // Check if user is logged in, redirect to login if not
+    // Local state for profile form data
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        profileImage: '',
+    });
+
+    // Local state for password form data
+    const [passwordData, setPasswordData] = useState({
+        oldPassword: '',
+        newPassword: '',
+    });
+
     useEffect(() => {
-        const email = localStorage.getItem('email');
-        if (!email) {
-            navigate('/login');
+        if (userData) {
+            setFormData({
+                firstName: userData.firstName || '',
+                lastName: userData.lastName || '',
+                profileImage: userData.profileImage || '',
+            });
         }
-    }, [navigate]);
+    }, [userData]);
 
     const handleLogout = () => {
         localStorage.removeItem('email');
         navigate('/login');
+    };
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    const handlePasswordChange = (e) => {
+        setPasswordData({
+            ...passwordData,
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    const handleProfileSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await fetch('http://localhost:3001/api/updateProfile', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: localStorage.getItem('email'), // Assuming email is stored in localStorage
+                    ...formData,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert('Profile updated successfully');
+            } else {
+                alert(data.error || 'Error updating profile');
+            }
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            alert('An error occurred. Please try again later.');
+        }
+    };
+
+    const handlePasswordSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await fetch('http://localhost:3001/api/updatePassword', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: localStorage.getItem('email'),
+                    ...passwordData,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert('Password updated successfully');
+                setPasswordData({
+                    oldPassword: '',
+                    newPassword: '',
+                });
+            } else {
+                alert(data.error || 'Error updating password');
+            }
+        } catch (error) {
+            console.error('Error updating password:', error);
+            alert('An error occurred. Please try again later.');
+        }
     };
 
     return (
@@ -30,8 +121,12 @@ const Profile = () => {
                 </div>
                 <nav className="flex-1">
                     <ul className="space-y-3">
-                        <Link to={"/dashboard"}><li className="px-4 py-2 hover:bg-gray-800 cursor-pointer">Home</li></Link>
-                        <Link to="/profile"><li className="px-4 py-2 hover:bg-gray-800 cursor-pointer">Profile</li></Link>
+                        <Link to={"/dashboard"}>
+                            <li className="px-4 py-2 hover:bg-gray-800 cursor-pointer">Home</li>
+                        </Link>
+                        <Link to="/profile">
+                            <li className="px-4 py-2 hover:bg-gray-800 cursor-pointer">Profile</li>
+                        </Link>
                         <li className="px-4 py-2 hover:bg-gray-800 cursor-pointer">Settings</li>
                         <li className="px-4 py-2 hover:bg-gray-800 cursor-pointer">Messages</li>
                     </ul>
@@ -55,7 +150,7 @@ const Profile = () => {
                                 <div className="w-10 rounded-full overflow-hidden">
                                     <img
                                         alt="User avatar"
-                                        src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                                        src={userData?.profileImage || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"}
                                     />
                                 </div>
                             </div>
@@ -118,46 +213,105 @@ const Profile = () => {
                 {/* Profile */}
                 <p className="p-20 text-center text-5xl font-semibold">Profile</p>
 
-                {/* profile card */}
-                <div className='p-8 mb-12 border w-full rounded-lg shadow-lg'>
-                    <div className='profilePic bg-gray-300 h-56 w-56 rounded-full flex justify-center items-center p-4 mx-auto'>
-                        <img className='w-32 h-32' src={defaultProfileImage} alt="Profile Picture" />
+                {/* Profile Card */}
+                <div className="p-8 mb-12 border w-full rounded-lg shadow-lg">
+                    <div className="profilePic bg-gray-300 h-56 w-56 rounded-full flex justify-center items-center p-4 mx-auto">
+                        <img
+                            className="w-32 h-32"
+                            src={formData.profileImage || defaultProfileImage}
+                            alt="Profile Picture"
+                        />
                     </div>
-                    <div className='my-4'>
-                        <h1 className='text-3xl font-bold text-center mt-4'>John Doe</h1>
-                        <p className='text-center text-lg'>@john</p>
+                    <div className="my-4">
+                        <h1 className="text-3xl font-bold text-center mt-4">
+                            {formData.firstName} {formData.lastName}
+                        </h1>
+                        <p className="text-center text-lg">@{userData?.username}</p>
                     </div>
                     <div>
-                        <form>
-                            <div className='flex gap-8'>
+                        <form onSubmit={handleProfileSubmit}>
+                            <div className="flex gap-8">
                                 {/* First Name */}
-                                <div className='firstName flex-1 w-full'>
+                                <div className="firstName flex-1 w-full">
                                     <div className="label">
                                         <span className="label-text text-xl font-bold">First Name</span>
                                     </div>
-                                    <input name='firstName' type="text" placeholder="Type here" className="input input-bordered w-full" />
+                                    <input
+                                        name="firstName"
+                                        type="text"
+                                        placeholder="Type here"
+                                        className="input input-bordered w-full"
+                                        value={formData.firstName}
+                                        onChange={handleChange}
+                                    />
                                 </div>
                                 {/* Last Name */}
-                                <div className='lastName flex-1 w-full'>
+                                <div className="lastName flex-1 w-full">
                                     <div className="label">
                                         <span className="label-text text-xl font-bold">Last Name</span>
                                     </div>
-                                    <input name='lastName' type="text" placeholder="Type here" className="input input-bordered w-full" />
+                                    <input
+                                        name="lastName"
+                                        type="text"
+                                        placeholder="Type here"
+                                        className="input input-bordered w-full"
+                                        value={formData.lastName}
+                                        onChange={handleChange}
+                                    />
                                 </div>
                             </div>
-                            {/* Image Url */}
-                            <div className='imageUrl w-full'>
+                            {/* Image URL */}
+                            <div className="imageUrl w-full">
                                 <div className="label">
-                                    <span className="label-text text-xl font-bold">Image Url</span>
+                                    <span className="label-text text-xl font-bold">Image URL</span>
                                 </div>
-                                <input name='imageUrl' type="text" placeholder="Type here" className="input input-bordered w-full" />
+                                <input
+                                    name="profileImage"
+                                    type="text"
+                                    placeholder="Type here"
+                                    className="input input-bordered w-full"
+                                    value={formData.profileImage}
+                                    onChange={handleChange}
+                                />
                             </div>
-                            {/* submit button */}
-                            <div className='text-center mt-4'>
-                                <button className='btn btn-primary w-full'>Update Profile</button>
+                            {/* Update Profile Button */}
+                            <div className="text-center mt-4">
+                                <button className="btn btn-primary w-full">Update Profile</button>
                             </div>
                         </form>
                     </div>
+                </div>
+
+                {/* Update Password */}
+                <div className="p-8 mb-12 border w-full rounded-lg shadow-lg">
+                    <h2 className="text-2xl font-bold mb-4 text-center">Change Password</h2>
+                    <form onSubmit={handlePasswordSubmit}>
+                        <div className="mb-4">
+                            <label className="block text-xl font-bold mb-2">Old Password</label>
+                            <input
+                                name="oldPassword"
+                                type="password"
+                                placeholder="Old password"
+                                className="input input-bordered w-full"
+                                value={passwordData.oldPassword}
+                                onChange={handlePasswordChange}
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-xl font-bold mb-2">New Password</label>
+                            <input
+                                name="newPassword"
+                                type="password"
+                                placeholder="New password"
+                                className="input input-bordered w-full"
+                                value={passwordData.newPassword}
+                                onChange={handlePasswordChange}
+                            />
+                        </div>
+                        <div className="text-center mt-4">
+                            <button className="btn btn-primary w-full">Update Password</button>
+                        </div>
+                    </form>
                 </div>
 
                 {/* Footer */}
@@ -199,7 +353,6 @@ const Profile = () => {
                     </form>
                 </footer>
             </div>
-
         </div>
     );
 };
