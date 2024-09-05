@@ -10,14 +10,6 @@
     "password": "asif1234"
   },
   {
-    "username": "asif",
-    "email": "asifzaman3123@gmail.com",
-    "password": "asif1234",
-    "firstName": "Asif",
-    "lastName": "Mehedi",
-    "profileImage": "https://i.ibb.co/2YGPgzH/image.png"
-  },
-  {
     "username": "mehedi",
     "email": "mehedi@gmail.com",
     "password": "mehedi1234"
@@ -34,5 +26,18 @@
     "firstName": "Test",
     "lastName": "User name",
     "profileImage": "https://i.ibb.co/nwHsxJj/image.png"
+  },
+  {
+    "username": "Asif",
+    "email": "asifzaman3123@gmail.com",
+    "password": "eram1234"
+  },
+  {
+    "username": "oni",
+    "email": "asifmehedi98@gmail.com",
+    "password": "1234",
+    "firstName": "Asif",
+    "lastName": "oni",
+    "profileImage": ""
   }
 ]
