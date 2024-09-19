@@ -39,5 +39,10 @@
     "firstName": "Asif",
     "lastName": "oni",
     "profileImage": ""
+  },
+  {
+    "username": "asif",
+    "email": "asifzaman3123@gmail.com",
+    "password": "eram1234"
   }
 ]
