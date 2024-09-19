@@ -31,8 +31,8 @@ const Dashboard = () => {
           <ul className="space-y-3">
             <Link to={"/dashboard"}><li className="px-4 py-2 hover:bg-gray-800 cursor-pointer">Home</li></Link>
             <Link to="/profile"><li className="px-4 py-2 hover:bg-gray-800 cursor-pointer">Profile</li></Link>
-            <li className="px-4 py-2 hover:bg-gray-800 cursor-pointer">Settings</li>
-            <li className="px-4 py-2 hover:bg-gray-800 cursor-pointer">Messages</li>
+            <Link to="/venues"><li className="px-4 py-2 hover:bg-gray-800 cursor-pointer">Venues</li></Link>
+            
           </ul>
         </nav>
       </div>
