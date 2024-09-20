@@ -18,9 +18,9 @@ const BookingModal = ({ venue, onClose }) => {
   };
 
   const sendMail = () => {
-    const templateParams = {
-      to_email: formData.email,
-      to_name: formData.name,
+    const message = {
+      to_name: formData.name, // User's name
+      email: formData.email, // User's email
       venue_name: venue.name,
       venue_location: venue.location,
       venue_capacity: venue.capacity,
@@ -29,12 +29,13 @@ const BookingModal = ({ venue, onClose }) => {
       checkin_date: formData.checkinDate,
       checkout_date: formData.checkoutDate,
     };
+  
 
     emailjs.send(
-      'event-management', // Replace with your EmailJS service ID
-      'booking_confirmation', // Replace with your EmailJS template ID
-      templateParams,
-      'nqtGbxhko2-OWTNTX' // Replace with your EmailJS public key
+      'service_mmzklcm', // Replace with your EmailJS service ID
+      'booking_mail', // Replace with your EmailJS template ID
+      message,
+      'j0DqWBxLed5fA-64F' // Replace with your EmailJS public key
     )
     .then((response) => {
       console.log("Email successfully sent!", response.status, response.text);
