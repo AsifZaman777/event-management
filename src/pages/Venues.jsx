@@ -2,7 +2,8 @@ import { useState } from "react";
 import { FaHome, FaEllipsisV, FaMapMarkerAlt, FaBed, FaStar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import venues from "../../venue_data"; // Assuming you have this file
-import BookingModal from "../component/BookingModal"; // Assuming BookingModal is in the same folder
+import BookingModal from "../component/BookingModal";
+import ReviewModal from "../component/ReviewModal"; // Assuming ReviewModal is in the same folder
 
 const Venues = () => {
   const navigate = useNavigate();
@@ -18,6 +19,9 @@ const Venues = () => {
   // State to manage booking modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState(null); // Store selected venue
+
+  // State to manage review modal
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   const handleSort = (e) => {
     const selectedCapacity = e.target.value;
@@ -35,11 +39,21 @@ const Venues = () => {
 
   const openBookingModal = (venue) => {
     setSelectedVenue(venue); // Set the selected venue
-    setIsModalOpen(true); // Open the modal
+    setIsModalOpen(true); // Open the booking modal
   };
 
   const closeBookingModal = () => {
     setIsModalOpen(false); // Close the modal
+    setSelectedVenue(null); // Clear selected venue
+  };
+
+  const openReviewModal = (venue) => {
+    setSelectedVenue(venue); // Set the selected venue for reviews
+    setIsReviewModalOpen(true); // Open the review modal
+  };
+
+  const closeReviewModal = () => {
+    setIsReviewModalOpen(false); // Close the review modal
     setSelectedVenue(null); // Clear selected venue
   };
 
@@ -135,13 +149,13 @@ const Venues = () => {
                     >
                       Book now
                     </button>
-                    <a
-                      href="#"
+                    <button
+                      onClick={() => openReviewModal(venue)}
                       className="inline-flex items-center justify-center px-4 py-2 text-md font-base text-white bg-yellow-500 rounded-lg shadow-lg hover:bg-yellow-600 focus:ring-4 focus:outline-none focus:ring-yellow-300 transition duration-200"
                     >
                       <FaStar className="mr-2 text-white" />
                       Reviews
-                    </a>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -155,6 +169,14 @@ const Venues = () => {
         <BookingModal
           onClose={closeBookingModal}
           venue={selectedVenue} // Pass the selected venue details
+        />
+      )}
+
+      {/* Review Modal */}
+      {isReviewModalOpen && selectedVenue && (
+        <ReviewModal
+          onClose={closeReviewModal}
+          venue={selectedVenue} // Pass the selected venue details for reviews
         />
       )}
     </div>
